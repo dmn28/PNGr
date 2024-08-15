@@ -6,7 +6,7 @@ use std::convert::TryFrom;
 
 use crate::{Error, Result};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct ChunkType {
     signature: [u8; 4],
 }
@@ -57,11 +57,11 @@ impl FromStr for ChunkType {
 }
 
 impl ChunkType {
-    fn bytes(&self) -> [u8; 4] {
+    pub fn bytes(&self) -> [u8; 4] {
         self.signature
     }
 
-    fn is_valid(&self) -> bool {
+    pub fn is_valid(&self) -> bool {
         for b in self.signature {
             if !b.is_ascii_alphabetic() {
                 return false;
@@ -75,24 +75,22 @@ impl ChunkType {
         }
     }
 
-    fn is_critical(&self) -> bool {
+    pub fn is_critical(&self) -> bool {
         self.signature[0].is_ascii_uppercase()
     }
 
-    fn is_public(&self) -> bool {
+    pub fn is_public(&self) -> bool {
         self.signature[1].is_ascii_uppercase()
     }
 
-    fn is_reserved_bit_valid(&self) -> bool {
+    pub fn is_reserved_bit_valid(&self) -> bool {
         self.signature[2].is_ascii_uppercase()
     }
 
-    fn is_safe_to_copy(&self) -> bool {
+    pub fn is_safe_to_copy(&self) -> bool {
         self.signature[3].is_ascii_lowercase()
     }
 }
-
-fn main() {}
 
 #[cfg(test)]
 mod tests {
