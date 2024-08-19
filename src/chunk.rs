@@ -4,7 +4,7 @@ use crate::{Error, Result};
 use crc::{Crc, CRC_32_ISO_HDLC};
 
 pub const CASTAGNOLI: Crc<u32> = Crc::<u32>::new(&CRC_32_ISO_HDLC);
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Chunk {
     data_length: u32,
     chunk_type: ChunkType,
