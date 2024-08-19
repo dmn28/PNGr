@@ -8,16 +8,16 @@ use crate::{Error, Result};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct ChunkType {
-    signature: [u8; 4],
+    chunk_type: [u8; 4],
 }
 
 impl Display for ChunkType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}{}{}{}",
-               self.signature[0] as char,
-               self.signature[1] as char,
-               self.signature[2] as char,
-               self.signature[3] as char
+               self.chunk_type[0] as char,
+               self.chunk_type[1] as char,
+               self.chunk_type[2] as char,
+               self.chunk_type[3] as char
         )
     }
 }
@@ -31,7 +31,7 @@ impl TryFrom<[u8; 4]> for ChunkType {
                 return Err(Error::from("Not a valid chunk of bytes [TryFrom]"));
             }
         }
-        Ok(Self { signature: value })
+        Ok(Self { chunk_type: value })
     }
 }
 
@@ -51,24 +51,24 @@ impl FromStr for ChunkType {
         }
 
         Ok(
-            Self { signature: [bytes[0], bytes[1], bytes[2], bytes[3]] }
+            Self { chunk_type: [bytes[0], bytes[1], bytes[2], bytes[3]] }
         )
     }
 }
 
 impl ChunkType {
     pub fn bytes(&self) -> [u8; 4] {
-        self.signature
+        self.chunk_type
     }
 
     pub fn is_valid(&self) -> bool {
-        for b in self.signature {
+        for b in self.chunk_type {
             if !b.is_ascii_alphabetic() {
                 return false;
             }
         }
 
-        if !self.signature[2].is_ascii_uppercase() {
+        if !self.chunk_type[2].is_ascii_uppercase() {
             false
         } else {
             true
@@ -76,19 +76,19 @@ impl ChunkType {
     }
 
     pub fn is_critical(&self) -> bool {
-        self.signature[0].is_ascii_uppercase()
+        self.chunk_type[0].is_ascii_uppercase()
     }
 
     pub fn is_public(&self) -> bool {
-        self.signature[1].is_ascii_uppercase()
+        self.chunk_type[1].is_ascii_uppercase()
     }
 
     pub fn is_reserved_bit_valid(&self) -> bool {
-        self.signature[2].is_ascii_uppercase()
+        self.chunk_type[2].is_ascii_uppercase()
     }
 
     pub fn is_safe_to_copy(&self) -> bool {
-        self.signature[3].is_ascii_lowercase()
+        self.chunk_type[3].is_ascii_lowercase()
     }
 }
 
