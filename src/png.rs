@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+use std::fs;
 use std::io::{BufReader, Read};
 use std::path::Path;
 use std::str::FromStr;
@@ -20,7 +21,14 @@ impl Png {
     }
 
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self> {
-        unimplemented!()
+        if path.as_ref().extension().unwrap() != "png" {
+            return Err("This program takes only PNG files".into());
+        }
+
+        let data: Vec<u8> = fs::read(path)?;
+        let png = Png::try_from(&data[..])?;
+
+        Ok(png)
     }
 
     pub fn append_chunk(&mut self, chunk: Chunk) {
@@ -114,10 +122,10 @@ impl TryFrom<&[u8]> for Png {
 
 impl Display for Png {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Png Header: {:?}\n", self.header)?;
-        write!(f, "Chunks:\n")?;
+        writeln!(f, "Png Header: {:?}", self.header)?;
+        writeln!(f, "Chunks:")?;
         for chunk in &self.chunks {
-            write!(f, "{}\n", chunk)?;
+            writeln!(f, "{}", chunk)?;
         }
         Ok(())
     }

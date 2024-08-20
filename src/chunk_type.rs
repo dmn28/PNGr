@@ -68,11 +68,7 @@ impl ChunkType {
             }
         }
 
-        if !self.chunk_type[2].is_ascii_uppercase() {
-            false
-        } else {
-            true
-        }
+        self.chunk_type[2].is_ascii_uppercase()
     }
 
     pub fn is_critical(&self) -> bool {
